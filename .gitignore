@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code workspace — local project memory and design notes.
+# EASTEREGGS.md especially: it is the answer key to every hidden thing
+# on the site, and publishing it would spoil the whole point.
+CLAUDE.md
+CONTEXT.md
+EASTEREGGS.md
+tars-build-prompt.md
+.claude/
