@@ -1,26 +1,328 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #06080d;
+  --paper: #e8e2d4;
+  --lamp: #f0b46a;
+  --lamp-soft: rgba(240, 180, 106, 0.14);
+  --accent: #e8dcc3;
+  --accent-soft: #24365c;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-grotesk), "Avenir Next", "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-mono-tars {
+  font-family: var(--font-mono), "Cascadia Mono", "Consolas", monospace;
+}
+
+/* ---------- ambient keyframes ---------- */
+
+@keyframes tars-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-140px, 0, 0); }
+}
+
+@keyframes tars-drift-slow {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-60px, 0, 0); }
+}
+
+@keyframes tars-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes tars-twinkle {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 0.35; }
+}
+
+@keyframes tars-mote {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+  10%  { opacity: var(--mote-max, 0.5); }
+  90%  { opacity: var(--mote-max, 0.5); }
+  100% { transform: translate3d(var(--mote-dx, 24px), var(--mote-dy, -60px), 0); opacity: 0; }
+}
+
+@keyframes tars-flicker {
+  0%, 100% { opacity: 1; }
+  92%      { opacity: 1; }
+  93%      { opacity: 0.92; }
+  94%      { opacity: 0.985; }
+  96%      { opacity: 0.94; }
+  98%      { opacity: 1; }
+}
+
+@keyframes tars-grain {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-2%, 1%); }
+  50%  { transform: translate(1%, -2%); }
+  75%  { transform: translate(-1%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes tars-shimmer {
+  0%, 100% { opacity: 0.5; transform: translateX(0); }
+  50%      { opacity: 0.9; transform: translateX(18px); }
+}
+
+@keyframes tars-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55); }
+  70%      { opacity: 0.8; box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+}
+
+@keyframes tars-shooting-star {
+  0%   { transform: translate3d(0, 0, 0) rotate(-18deg) scaleX(0.2); opacity: 0; }
+  4%   { opacity: 0.9; }
+  9%   { transform: translate3d(-340px, 90px, 0) rotate(-18deg) scaleX(1); opacity: 0; }
+  100% { transform: translate3d(-340px, 90px, 0) rotate(-18deg) scaleX(1); opacity: 0; }
+}
+
+@keyframes tars-rise {
+  from { transform: translate(-50%, 24px); opacity: 0; }
+  to   { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@keyframes tars-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes tars-sheet-up {
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes tars-toast {
+  0%   { opacity: 0; transform: translate(-50%, 6px); }
+  12%  { opacity: 1; transform: translate(-50%, 0); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* a book tips off the shelf, hangs, then drops to the floor — the anomaly */
+@keyframes tars-book-fall {
+  0%, 55%  { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  61%      { transform: translate(9px, -3px) rotate(24deg); opacity: 1; }
+  65%      { transform: translate(20px, 30px) rotate(70deg); opacity: 1; }
+  76%      { transform: translate(34px, 470px) rotate(96deg); opacity: 1; }
+  77%      { transform: translate(34px, 464px) rotate(90deg); opacity: 1; }
+  79%      { transform: translate(34px, 470px) rotate(94deg); opacity: 1; }
+  92%      { transform: translate(34px, 470px) rotate(94deg); opacity: 1; }
+  98%      { transform: translate(34px, 470px) rotate(94deg); opacity: 0; }
+  100%     { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+}
+
+/* a small vessel crossing the horizon (SVG user units) */
+@keyframes tars-sail {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-240px); }
+}
+
+/* Tenet: rain that falls upward */
+@keyframes tars-rain-up {
+  0%   { transform: translateY(30px); opacity: 0; }
+  12%  { opacity: 0.5; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(-34px); opacity: 0; }
+}
+
+/* gentle hull bob for the galley */
+@keyframes tars-bob {
+  0%, 100% { transform: translateY(0) rotate(1.1deg); }
+  50%      { transform: translateY(2.4px) rotate(-1.1deg); }
+}
+
+/* Trinity: the flash (one blink of white, then gone) */
+@keyframes tars-flash-once {
+  0%   { opacity: 0.92; }
+  100% { opacity: 0; }
+}
+
+/* Trinity: papers lift ~40s after the flash — sound arrives late */
+@keyframes tars-papers-lift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  22%  { transform: translate(7px, -8px) rotate(-3deg); }
+  48%  { transform: translate(3px, -1px) rotate(1.4deg); }
+  74%  { transform: translate(1px, -2px) rotate(-0.6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Trinity: the lamp swings on the same shockwave */
+@keyframes tars-lamp-swing {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(2.6deg); }
+  45%  { transform: rotate(-1.8deg); }
+  70%  { transform: rotate(0.9deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Dunkirk: the queue shuffles forward, barely */
+@keyframes tars-queue-shuffle {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-2.5px); }
+}
+
+/* Dunkirk: destroyer smoke — always rising, never done (visual Shepard tone) */
+@keyframes tars-smoke {
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  18%  { opacity: 0.45; }
+  100% { transform: translate(-3px, -15px) scale(1.5); opacity: 0; }
+}
+
+/* Dunkirk: fuel gauge needle, F to E over the hour */
+@keyframes tars-gauge {
+  from { transform: rotate(50deg); }
+  to   { transform: rotate(-50deg); }
+}
+
+/* Odyssey: one constellation slowly becomes a drawn bow (over an hour) */
+@keyframes tars-fade-out-slow {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes tars-fade-in-slow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Gargantua, lamp off: dust settles into a message */
+@keyframes tars-dust-settle {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* LED ticker: text enters from the right edge and scrolls fully out left */
+@keyframes tars-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+/* mission-clock colon, ticking once a second — digits stay solid */
+@keyframes tars-colon {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0.3; }
+}
+
+/* a distant plane crossing the dawn sea, right to left */
+@keyframes tars-flyby {
+  0%, 74%  { transform: translateX(0); opacity: 0; }
+  76%      { opacity: 0.85; }
+  97%      { opacity: 0.85; }
+  100%     { transform: translateX(-260px); opacity: 0; }
+}
+
+@keyframes tars-fold {
+  0%, 100% { transform: perspective(900px) rotateX(0.4deg); }
+  50%      { transform: perspective(900px) rotateX(-0.4deg); }
+}
+
+/* Pause every ambient animation inside inactive window views. */
+[data-view-active="false"] *,
+[data-view-active="false"] {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ---------- texture ---------- */
+
+.tars-grain {
+  position: absolute;
+  inset: -6%;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+  animation: tars-grain 1.6s steps(4) infinite;
+}
+
+.tars-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 42%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* ---------- glass ---------- */
+
+.tars-glass {
+  background: linear-gradient(
+    180deg,
+    rgba(28, 24, 20, 0.78),
+    rgba(14, 12, 10, 0.86)
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(232, 226, 212, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(232, 226, 212, 0.1),
+    0 18px 48px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- controls ---------- */
+
+/* Focus rings only for keyboard navigation — a mouse click on the radio or
+   totem should never draw a selection box over the illustration. */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[role="option"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+svg [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tars-range {
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(232, 226, 212, 0.18);
+  cursor: pointer;
+}
+.tars-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--paper);
+}
+.tars-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: none;
+  border-radius: 999px;
+  background: var(--paper);
 }
