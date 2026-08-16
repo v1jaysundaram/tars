@@ -91,8 +91,8 @@ body {
 }
 
 @keyframes tars-rise {
-  from { transform: translate(-50%, 24px); opacity: 0; }
-  to   { transform: translate(-50%, 0); opacity: 1; }
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes tars-fade-in {
@@ -106,8 +106,8 @@ body {
 }
 
 @keyframes tars-toast {
-  0%   { opacity: 0; transform: translate(-50%, 6px); }
-  12%  { opacity: 1; transform: translate(-50%, 0); }
+  0%   { opacity: 0; transform: translateY(6px); }
+  12%  { opacity: 1; transform: translateY(0); }
   80%  { opacity: 1; }
   100% { opacity: 0; }
 }

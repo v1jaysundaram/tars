@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useIsMobile } from "./Scene";
 
 /**
@@ -170,6 +171,9 @@ export function PinBoard({
 }) {
   const mobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!sheetOpen) return;
@@ -194,10 +198,14 @@ export function PinBoard({
           </svg>
         </button>
 
-        {sheetOpen && (
+        {/* Portalled to <body>: this component renders inside Scene's room
+            wrapper, which sets pointer-events:none (taps would fall through)
+            and a CSS filter (which traps position:fixed and creates a
+            stacking context that would bury the sheet under the player). */}
+        {sheetOpen && mounted && createPortal(
           <>
             <div
-              className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-[3px]"
+              className="pointer-events-auto fixed inset-0 z-[70] bg-black/50 backdrop-blur-[3px]"
               onClick={() => setSheetOpen(false)}
               aria-hidden
               style={{ animation: "tars-fade-in 0.25s ease-out" }}
@@ -205,7 +213,7 @@ export function PinBoard({
             <div
               role="dialog"
               aria-label="Mission board"
-              className="tars-glass fixed inset-x-0 bottom-0 z-[56] rounded-t-2xl px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3"
+              className="tars-glass pointer-events-auto fixed inset-x-0 bottom-0 z-[71] rounded-t-2xl px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3"
               style={{ animation: "tars-sheet-up 0.32s cubic-bezier(0.2,0.8,0.2,1)" }}
             >
               <div className="mb-3 flex items-center justify-between">
@@ -232,7 +240,8 @@ export function PinBoard({
                 <LedStrip notice={notice} idleText={idleText} big />
               </div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </>
     );

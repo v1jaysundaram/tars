@@ -20,17 +20,20 @@ function useClock() {
   return time;
 }
 
+/* Module-scoped: survives StrictMode's double-mount in dev, resets on reload. */
+let visitCounted = false;
+
 /** Personal visit counter — honest without a backend: it's YOUR log. */
 function useVisitLog() {
   const [visits, setVisits] = useState<number | null>(null);
   useEffect(() => {
-    /* count once per browser SESSION — sessionStorage guards against both
-       React StrictMode double-effects and same-tab re-renders */
+    /* one increment per page load; the module flag absorbs StrictMode's
+       double-effect without also swallowing genuine refreshes */
     let n = parseInt(localStorage.getItem("tars.visits") ?? "0", 10) || 0;
-    if (!sessionStorage.getItem("tars.visit-counted")) {
+    if (!visitCounted) {
+      visitCounted = true;
       n += 1;
       localStorage.setItem("tars.visits", String(n));
-      sessionStorage.setItem("tars.visit-counted", "1");
     }
     setVisits(n);
   }, []);
