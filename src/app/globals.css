@@ -245,6 +245,23 @@ body {
   }
 }
 
+/* Landscape phones: the signage straddles the window frame, which clips off
+   the top of the screen when there is almost no vertical room. Tuck it fully
+   inside the glass instead. */
+@media (max-height: 520px) {
+  .tars-signage {
+    top: 6px;
+    transform: translate(-50%, 0);
+  }
+  .tars-signage h1 {
+    font-size: 16px;
+    letter-spacing: 0.3em;
+  }
+  .tars-signage p {
+    display: none;
+  }
+}
+
 /* ---------- texture ---------- */
 
 .tars-grain {

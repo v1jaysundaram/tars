@@ -192,7 +192,7 @@ export function TarsApp() {
       )}
 
       {/* credits */}
-      <p className="font-mono-tars pointer-events-auto absolute bottom-[max(0.6rem,env(safe-area-inset-bottom))] right-4 z-30 text-right text-[8px] leading-relaxed tracking-[0.08em] text-[#4a453c] max-md:hidden">
+      <p className="font-mono-tars pointer-events-auto absolute bottom-[max(0.6rem,env(safe-area-inset-bottom))] right-4 z-30 text-right text-[8px] leading-relaxed tracking-[0.08em] text-[#4a453c] max-md:hidden lg:block">
         SOUND VIA YOUTUBE&trade; ·{" "}
         <a
           href="https://x.com/VijaySundaram_"

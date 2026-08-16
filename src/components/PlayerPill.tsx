@@ -207,8 +207,14 @@ export function PlayerPill({
             </div>
           </div>
 
-          {/* mobile transport (no progress/volume) */}
-          <div className="hidden shrink-0 items-center gap-1 max-md:flex">
+          {/* mobile transport */}
+          <div className="hidden shrink-0 items-center gap-0.5 max-md:flex">
+            <button type="button" onClick={onPrevious} disabled={!yt.ready || !configured}
+              aria-label="Previous track" className={`${btn} h-11 w-11`}>
+              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor" aria-hidden>
+                <path d="M4 3 h2 v14 H4 Z M17 3 v14 L7 10 Z" />
+              </svg>
+            </button>
             <button type="button" onClick={onPlayPause} disabled={!yt.ready || !configured}
               aria-label={yt.playing ? "Pause" : "Play"}
               className={`${btn} h-11 w-11 border border-[#e8dcc3]/25 bg-[#e8dcc3]/10`}>
@@ -223,7 +229,7 @@ export function PlayerPill({
               )}
             </button>
             <button type="button" onClick={onNext} disabled={!yt.ready || !configured}
-              aria-label="Next track" className={`${btn} h-10 w-10`}>
+              aria-label="Next track" className={`${btn} h-11 w-11`}>
               <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor" aria-hidden>
                 <path d="M14 3 h2 v14 h-2 Z M3 3 v14 l10 -7 Z" />
               </svg>
@@ -270,13 +276,13 @@ export function PlayerPill({
 
         {/* seek — its own strip, clear of the transport, taller hit area */}
         {configured && (
-          <div className="mx-auto mt-2 flex w-full max-w-[440px] items-center gap-2.5 max-md:hidden">
+          <div className="mx-auto mt-2 flex w-full max-w-[440px] items-center gap-2.5">
             <span className="font-mono-tars w-8 shrink-0 text-right text-[9px] text-[#8a8172]">
               {fmtTime(scrub ?? yt.currentTime)}
             </span>
             <input
               type="range"
-              className="tars-range h-4 flex-1"
+              className="tars-range h-5 flex-1"
               min={0}
               max={Math.max(yt.duration, 1)}
               step={1}
@@ -292,6 +298,10 @@ export function PlayerPill({
             <span className="font-mono-tars w-8 shrink-0 text-[9px] text-[#8a8172]">
               {fmtTime(yt.duration)}
             </span>
+            {/* sleep lives here on mobile; it sits in the right column on desktop */}
+            <div className="shrink-0 md:hidden">
+              <SleepTimer onExpire={onPause} />
+            </div>
           </div>
         )}
       </div>

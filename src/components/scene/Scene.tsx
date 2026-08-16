@@ -13,6 +13,22 @@ import { PinBoard } from "./PinBoard";
  * providers. Interactions (radio, watch, top) bubble up via callbacks.
  */
 
+/**
+ * Viewport check for layouts CSS alone can't express (SVG viewBox, hit-target
+ * sizing). Starts false so SSR and first client render agree, then corrects.
+ */
+export function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return mobile;
+}
+
 function DustMotes({ slow }: { slow: boolean }) {
   const motes = Array.from({ length: 14 }, (_, i) => ({
     left: 8 + ((i * 37) % 60),
@@ -98,9 +114,12 @@ function useWatchAngles(rule: Station["clockRule"]) {
 
 function Wristwatch({
   station,
+  mobile,
   onClick,
 }: {
   station: Station;
+  /** Touch needs a far bigger target than the drawn watch face. */
+  mobile?: boolean;
   onClick: () => void;
 }) {
   const { h, m, s, shadow } = useWatchAngles(station.clockRule);
@@ -115,6 +134,7 @@ function Wristwatch({
       onMouseDown={(e) => e.preventDefault()}
       style={{ cursor: "pointer", pointerEvents: "auto" }}
     >
+      {mobile && <circle cx="960" cy="162" r="52" fill="transparent" />}
       <ellipse cx="960" cy="170" rx="24" ry="6" fill="#0a0603" opacity="0.55" />
       <path
         d="M938 168 C934 158 942 150 950 152 M982 168 C986 158 978 150 970 152"
@@ -172,10 +192,12 @@ type TopPhase = "idle" | "spinning" | "fallen";
 
 function SpinningTop({
   eternal,
+  mobile,
   onSpin,
 }: {
   /** LIMBO: the top never falls. */
   eternal: boolean;
+  mobile?: boolean;
   onSpin: (phase: TopPhase) => void;
 }) {
   const [phase, setPhase] = useState<TopPhase>("idle");
@@ -222,6 +244,8 @@ function SpinningTop({
       onMouseDown={(e) => e.preventDefault()}
       style={{ cursor: "pointer", pointerEvents: "auto" }}
     >
+      {/* touch target; drawn before the radio so the radio wins any overlap */}
+      {mobile && <circle cx="608" cy="166" r="44" fill="transparent" />}
       <ellipse cx="612" cy="176" rx="13" ry="3.5" fill="#0a0603" opacity="0.5" />
       <g
         style={{
@@ -432,6 +456,7 @@ function Desk({
   station,
   playing,
   lampOn,
+  mobile,
   shockKey,
   onLampToggle,
   onRadioToggle,
@@ -441,6 +466,7 @@ function Desk({
   station: Station;
   playing: boolean;
   lampOn: boolean;
+  mobile: boolean;
   /** Trinity: increments ~40s after the flash — the shockwave arrives. */
   shockKey: number;
   onLampToggle: () => void;
@@ -453,8 +479,8 @@ function Desk({
   const tintTransition = { transition: "fill 1.8s ease-in-out, stop-color 1.8s ease-in-out" };
   return (
     <svg
-      className="absolute bottom-0 left-0 h-auto w-full"
-      viewBox="0 0 1440 340"
+      className="absolute left-0 h-auto w-full max-md:bottom-[118px] md:bottom-0"
+      viewBox={mobile ? "300 40 900 300" : "0 0 1440 340"}
       preserveAspectRatio="xMidYMax slice"
       aria-hidden={false}
       style={{ pointerEvents: "none" }}
@@ -554,7 +580,7 @@ function Desk({
       </g>
 
       {/* ---- the totem ---- */}
-      <SpinningTop eternal={station.id === "limbo"} onSpin={onTopEvent} />
+      <SpinningTop eternal={station.id === "limbo"} mobile={mobile} onSpin={onTopEvent} />
 
       {/* ---- small analog radio (click = play/pause) ---- */}
       <g
@@ -620,7 +646,7 @@ function Desk({
       </g>
 
       {/* ---- wristwatch, face up, on station time ---- */}
-      <Wristwatch station={station} onClick={onWatchClick} />
+      <Wristwatch station={station} mobile={mobile} onClick={onWatchClick} />
 
       {/* ---- stacked books, right ---- */}
       <g>
@@ -735,6 +761,7 @@ export function Scene({
   const parallaxRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const [lampOn, setLampOn] = useState(true);
+  const mobile = useIsMobile();
 
   /* Trinity: a silent white flash; the shockwave reaches the desk ~40s
      later (papers lift, lamp swings). Repeats every ~2.5 minutes. */
@@ -830,7 +857,7 @@ export function Scene({
       {/* no filter here — a filter on this container re-resolves its
           %-positioned children against the wrong box and shoves the whole
           window up; the view brightens via the overlay below instead */}
-      <div className="absolute left-[9%] right-[9%] top-[9.5%] bottom-[30%] max-md:left-[4%] max-md:right-[4%] max-md:top-[11%] max-md:bottom-[24%]">
+      <div className="tars-window absolute top-[9.5%] bottom-[min(23vw,34%)] md:left-[6%] md:right-[20%] lg:left-[9%] lg:right-[9%] max-md:left-[3%] max-md:right-[3%] max-md:top-[10%] max-md:bottom-[31%]">
         <div className="absolute -inset-[10px] rounded-[26px] border border-[#2a2218] bg-[#0c0a07] shadow-[0_0_80px_rgba(0,0,0,0.8)]" />
         <div className="absolute inset-0 overflow-hidden rounded-[18px]">
           <div
@@ -865,7 +892,7 @@ export function Scene({
         </div>
 
         {/* ---- etched signage on the frame's upper edge ---- */}
-        <div className="absolute -top-[10px] left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="tars-signage absolute -top-[10px] left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center">
           <div className="rounded-md border border-[#3a2f20] bg-[#0c0a07] px-6 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.7)] max-md:px-4 max-md:py-1.5">
             <h1
               className="text-[26px] font-semibold tracking-[0.42em] text-[#e8dcc3] [text-shadow:0_0_18px_rgba(240,180,106,0.35)] max-md:text-lg"
@@ -873,8 +900,9 @@ export function Scene({
             >
               TARS
             </h1>
-            <p className="font-mono-tars mt-0.5 text-[10px] tracking-[0.14em] text-[#8a8172] max-md:text-[8px]">
-              DEEP-FOCUS RADIO · MUSIC FOR WORK THAT NEEDS GRAVITY
+            <p className="font-mono-tars mt-0.5 whitespace-nowrap text-[10px] tracking-[0.14em] text-[#8a8172] max-md:text-[7.5px] max-md:tracking-[0.1em]">
+              DEEP-FOCUS RADIO
+              <span className="max-md:hidden"> · MUSIC FOR WORK THAT NEEDS GRAVITY</span>
             </p>
           </div>
         </div>
@@ -931,6 +959,7 @@ export function Scene({
           station={station}
           playing={playing}
           lampOn={lampOn}
+          mobile={mobile}
           shockKey={shockKey}
           onLampToggle={() => setLampOn((v) => !v)}
           onRadioToggle={onRadioToggle}

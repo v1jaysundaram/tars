@@ -28,8 +28,8 @@ export function SessionTimer({ startedAt }: { startedAt: number | null }) {
   const millerYears = ((elapsed / 3600) * 7).toFixed(0);
 
   return (
-    <div className="font-mono-tars pointer-events-none absolute bottom-[max(1.1rem,env(safe-area-inset-bottom))] left-5 z-30 select-none max-md:hidden">
-      <div className="text-[11px] tracking-[0.22em] text-[#a8a08e]">
+    <div className="font-mono-tars pointer-events-none absolute bottom-[164px] left-4 z-30 select-none md:bottom-[max(1.1rem,env(safe-area-inset-bottom))] md:left-5">
+      <div className="text-[10px] tracking-[0.2em] text-[#a8a08e] md:text-[11px] md:tracking-[0.22em]">
         SESSION {fmt(elapsed)}
       </div>
       {elapsed >= MILLER_THRESHOLD && (
