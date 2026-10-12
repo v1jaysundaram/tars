@@ -18,7 +18,7 @@
 TARS is a single-page radio that plays the scores from Christopher Nolan's films while you work. You sit at an illustrated desk in front of a huge observation window, pick a station, and the view through the window changes with the film. Keep the tab open, get on with your day.
 
 <p align="center">
-  <a href="LIVE_SITE_URL"><b>🚀 Try it live</b></a>
+  <a href="https://tars-radio.vercel.app/"><b>🚀 Try it live</b></a>
 </p>
 
 ---
