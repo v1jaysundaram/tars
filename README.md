@@ -30,7 +30,7 @@ TARS is a single-page radio that plays the scores from Christopher Nolan's films
 </p>
 
 <p align="center">
-  <a href="YOUTUBE_VIDEO_URL">▶️ Watch the demo on YouTube</a>
+  <a href="https://youtu.be/VXsJCIYIYbk">▶️ Watch the demo on YouTube</a>
 </p>
 
 ---
